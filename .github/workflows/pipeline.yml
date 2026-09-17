@@ -31,8 +31,13 @@ jobs:
         run: npm test
 
       - name: Dependency Audit (npm audit)
-        run: npm audit --audit-level=high
-        continue-on-error: true # Para generar reporte sin romper obligatoriamente el build por vulnerabilidades ajenas
+        run: npm audit --json > audit-report.json || true
+
+      - name: Upload Audit Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-audit-report
+          path: audit-report.json
 
       - name: Secret Scanning (Gitleaks)
         uses: gitleaks/gitleaks-action@v2
